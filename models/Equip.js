@@ -31,6 +31,10 @@ const EquipSchema = new mongoose.Schema({
     type: String,
     default: "Not registered"
   },
+  registerName: {
+    type: String,
+    default: "Not registered"
+  },
   comments: {
     type: [Schema.Types.ObjectId],
     ref: "Comment",

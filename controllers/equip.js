@@ -108,8 +108,9 @@ export const registerEquip = async (req, res) => {
   if (findEquip.isRegisterd) {
     res.status(409).json({ message: "This equipment is already registered" });
   }
-  const { whoRegistered } = req.body;
+  const { whoRegistered, name } = req.body;
   findEquip.whoRegistered = whoRegistered;
+  findEquip.registerName = name;
   findEquip.isRegisterd = true;
   findEquip.status = "대여중";
   try {
@@ -126,6 +127,8 @@ export const cancelEquip = async (req, res) => {
     res.status(409).json({ message: "This equipment is not registered" });
   }
   findEquip.isRegisterd = false;
+  findEquip.whoRegistered = "Not Registered";
+  findEquip.registerName = "Not Registered";
   findEquip.status = "대여가능";
   try {
     await findEquip.save();
@@ -137,7 +140,7 @@ export const cancelEquip = async (req, res) => {
 
 export const searchEquip = async (req, res) => {
   let { keyword } = req.query;
-  const regex = (pattern) => new RRegExp(`.*${pattern}.*`);
+  const regex = (pattern) => new RegExp(`.*${pattern}.*`);
   const titleRegex = regex(title);
 
   try {
