@@ -2,6 +2,8 @@ import Equip from "../models/Equip.js";
 import Comment from "../models/Comment.js";
 import Error from "../models/Error.js";
 
+import mongoose from "mongoose";
+
 export const getEquip = async (req, res) => {
   try {
     const equip = await Equip.find();
@@ -76,6 +78,8 @@ export const deleteEquip = async (req, res) => {
 };
 
 export const getEquipById = async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(404).send(`No equip with id: ${req.params.id}`);
   const findEquip = await Equip.findById(req.params.id);
   try {
     res.status(200).json(findEquip);
@@ -128,5 +132,20 @@ export const cancelEquip = async (req, res) => {
     res.status(200).json(findEquip);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+export const searchEquip = async (req, res) => {
+  let { keyword } = req.query;
+  const regex = (pattern) => new RRegExp(`.*${pattern}.*`);
+  const titleRegex = regex(title);
+
+  try {
+    const equip = await Equip.find({
+      $or: [{ name: titleRegex }, { category: titleRegex }],
+    });
+    res.status(200).json(equip);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 };
