@@ -98,3 +98,35 @@ export const addError = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+
+export const registerEquip = async (req, res) => {
+  const findEquip = await Equip.findById(req.params.id);
+  if (findEquip.isRegisterd) {
+    res.status(409).json({ message: "This equipment is already registered" });
+  }
+  const { whoRegistered } = req.body;
+  findEquip.whoRegistered = whoRegistered;
+  findEquip.isRegisterd = true;
+  findEquip.status = "대여중";
+  try {
+    await findEquip.save();
+    res.status(200).json(findEquip);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const cancelEquip = async (req, res) => {
+  const findEquip = await Equip.findById(req.params.id);
+  if (!findEquip.isRegisterd) {
+    res.status(409).json({ message: "This equipment is not registered" });
+  }
+  findEquip.isRegisterd = false;
+  findEquip.status = "대여가능";
+  try {
+    await findEquip.save();
+    res.status(200).json(findEquip);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

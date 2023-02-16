@@ -11,6 +11,7 @@ import authRoutes from "./routes/auth.js";
 import equipRoutes from './routes/equip.js';
 import commentRoutes from './routes/comment.js';
 import errorRoutes from './routes/error.js';
+import userRoutes from './routes/user.js';
 
 const app = express();
 dotenv.config();
@@ -46,6 +47,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/equip", equipRoutes);
 app.use("/api/comment", commentRoutes);
 app.use("/api/error", errorRoutes);
+app.use("/api/user", userRoutes);
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin");

@@ -29,6 +29,7 @@ const EquipSchema = new mongoose.Schema({
   },
   whoRegistered: {
     type: String,
+    default: "Not registered"
   },
   comments: {
     type: [Schema.Types.ObjectId],
