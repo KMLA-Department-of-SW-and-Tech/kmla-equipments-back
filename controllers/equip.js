@@ -106,7 +106,9 @@ export const addError = async (req, res) => {
 export const registerEquip = async (req, res) => {
   const findEquip = await Equip.findById(req.params.id);
   if (findEquip.isRegisterd) {
-    res.status(409).json({ message: "This equipment is already registered" });
+    return res
+      .status(409)
+      .json({ message: "This equipment is already registered" });
   }
   const { whoRegistered, name } = req.body;
   findEquip.whoRegistered = whoRegistered;
@@ -115,16 +117,18 @@ export const registerEquip = async (req, res) => {
   findEquip.status = "대여중";
   try {
     await findEquip.save();
-    res.status(200).json(findEquip);
+    return res.status(200).json(findEquip);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 };
 
 export const cancelEquip = async (req, res) => {
   const findEquip = await Equip.findById(req.params.id);
   if (!findEquip.isRegisterd) {
-    res.status(409).json({ message: "This equipment is not registered" });
+    return res
+      .status(409)
+      .json({ message: "This equipment is not registered" });
   }
   findEquip.isRegisterd = false;
   findEquip.whoRegistered = "Not Registered";
@@ -132,9 +136,9 @@ export const cancelEquip = async (req, res) => {
   findEquip.status = "대여가능";
   try {
     await findEquip.save();
-    res.status(200).json(findEquip);
+    return res.status(200).json(findEquip);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
   }
 };
 
@@ -148,6 +152,24 @@ export const searchEquip = async (req, res) => {
       $or: [{ name: titleRegex }, { category: titleRegex }],
     });
     res.status(200).json(equip);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+export const resetEquip = async (req, res) => {
+  // reset all equip register status
+  try {
+    const equip = await Equip.find();
+    equip.forEach((item) => {
+      item.isRegisterd = false;
+      item.whoRegistered = "Not Registered";
+      item.registerName = "Not Registered";
+      item.status = "대여가능";
+      item.save();
+    });
+    res.status(200).json(equip);
+    
   } catch (error) {
     res.status(404).json({ message: error.message });
   }

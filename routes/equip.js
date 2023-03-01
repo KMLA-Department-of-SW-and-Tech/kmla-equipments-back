@@ -10,7 +10,8 @@ import {
     addError,
     registerEquip,
     cancelEquip,
-    searchEquip
+    searchEquip,
+    resetEquip
  } from "../controllers/equip.js";
 
 const router = express.Router();
@@ -26,5 +27,6 @@ router.delete("/:id", deleteEquip);
 router.patch("/register/:id", registerEquip);
 router.patch("/cancel/:id", cancelEquip);
 router.get("/search", searchEquip);
+router.patch("/reset", resetEquip);
 
 export default router;
